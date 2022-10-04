@@ -1,0 +1,1 @@
+Bot for scraping manga/manhwa websites to directly DM me when there are new chapter updates
