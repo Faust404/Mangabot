@@ -1,14 +1,76 @@
 {
-    "Isekai Nonbiri Nouka": {
-        "chapcount": 188,
-        "class": "panel-story-chapter-list",
-        "tag": "div",
-        "url": "https://chapmanganelo.com/manga-ag115026"
-    },
-    "The Constellation That Returned From Hell": {
-        "chapcount": 95,
-        "class": "eplister",
-        "tag": "div",
-        "url": "https://asura.gg/manga/the-constellation-that-returned-from-hell/"
+    "Manga": {
+        "1": {
+            "name": "Murim Login",
+            "chapcount": 131,
+            "source": "Asura",
+            "url": "https://asura.gg/manga/murim-login/"
+        },
+        "2": {
+            "name": "The Greatest Estate Developer",
+            "chapcount": 74,
+            "source": "Asura",
+            "url": "https://asura.gg/manga/the-greatest-estate-developer/"
+        },
+        "3": {
+            "name": "Mashle",
+            "chapcount": 133,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-hu985203"
+        },
+        "4": {
+            "name": "Mercenary Enrollment",
+            "chapcount": 111,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-jz987182"
+        },
+        "5": {
+            "name": "Legend Of The Northern Blade",
+            "chapcount": 132,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-ie985687"
+        },
+        "6": {
+            "name": "Path Of The Shaman",
+            "chapcount": 78,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-kb987436"
+        },
+        "7": {
+            "name": "Eleceed",
+            "chapcount": 220,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-de980813"
+        },
+        "8": {
+            "name": "Survival Story Of A Sword King In A Fantasy World",
+            "chapcount": 146,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-gt984176"
+        },
+        "9": {
+            "name": "Long Way of the Warrior",
+            "chapcount": 100,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-je987039"
+        },
+        "10": {
+            "name": "Berserk",
+            "chapcount": 370.7,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-ma952557"
+        },
+        "11": {
+            "name": "Return of The Mount Hua Sect",
+            "chapcount": 72.5,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-lf988940"
+        },
+        "12": {
+            "name": "The Beginning After The End",
+            "chapcount": 168.0,
+            "source": "Manganelo",
+            "url": "https://chapmanganato.com/manga-dg980989"
+        }
     }
 }
