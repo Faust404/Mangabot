@@ -3,9 +3,11 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from discord.ext import tasks, commands
+from discord import app_commands
 
 import re
 import requests
+import discord
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--no-sandbox")
@@ -33,35 +35,55 @@ class Base(commands.Cog):
             "Manganelo" : {"class": "panel-story-chapter-list", "tag": "div"}
         }
 
+    async def is_allowed(ctx):
+        return (ctx.author.id == 827799188950876201
+            or ctx.author.id == 223117142290202625)
+
     @commands.Cog.listener()
     async def on_ready(self):
         print("Bot Online")
+        await self.bot.tree.sync()
     
-    @commands.command()
+    @app_commands.command()
+    @commands.check(is_allowed)
     async def start(self, ctx):
         self.channel_id = ctx.channel.id
         self.check_new_chapters.start()
     
-    @commands.command()
+    @app_commands.command()
+    @commands.check(is_allowed)
     async def stop(self, ctx):
         self.check_new_chapters.cancel()
 
-    @commands.command()
-    async def search(self, ctx, *, name):
+    @app_commands.command()
+    async def search(self, interaction: discord.Interaction, name: str):
+        role = discord.utils.get(interaction.guild.roles, name = 'test')
         data = requests.get('https://manganelo.com/search/story/'+self.format_for_url(name)).text
         search_results = BeautifulSoup(data, features='lxml').find('div', class_="panel-search-story")
         mangas = []
+        result_embed = discord.Embed(title="Search Results")
         if not (search_results == None):
             search_results = search_results.find_all('div', class_='search-story-item')
             for manga in search_results:
                 title = manga.find('a', class_="a-h text-nowrap item-title")['title'].strip()
                 link = manga.find('a', class_="a-h text-nowrap item-title")['href'].strip()
+                # icon_url = manga.find("img", class_="img-loading").get("src")
                 updated = manga.find_all('span', class_="text-nowrap item-time")[0].text.replace('Updated :', '').strip()
 
+                # mangas.append({'title': title, 'link': link, 'last-updated': updated, 'thumbnail': icon_url})
                 mangas.append({'title': title, 'link': link, 'last-updated': updated})
-                await ctx.send(link)
 
-    @tasks.loop(minutes=2)
+            if len(mangas) > 1:
+                for manga in mangas:
+                    # result_embed.set_image(url=manga['thumbnail'])
+                    result_embed.add_field(name=manga['title'],
+                                             value=manga['link'], inline=False)
+                await interaction.response.send_message(embed=result_embed, ephemeral=True)
+            else:
+                await interaction.response.send_message(mangas[0]['link'], ephemeral=True)
+                    
+
+    @tasks.loop(minutes=30)
     async def check_new_chapters(self):
         for entry in self.mangadb.all():
             manga = entry['name'] 

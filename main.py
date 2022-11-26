@@ -9,16 +9,16 @@ intents.members = True
 TOKEN = 'ODM1NTc3NTA1MTc5MjM4NDIw.GJX15F.E43N99vu5AS1EV2BfIFoR6dwCcZpzJeBQ3yCMc'
 bot = commands.Bot(command_prefix=",", intents=intents)
 
+async def is_allowed(ctx):
+    return (ctx.author.id == 827799188950876201
+        or ctx.author.id == 223117142290202625)
+
 async def main():
 
     for f in os.listdir("./cogs"):
         if f.endswith(".py"):
             await bot.load_extension("cogs." + f[:-3])
-    
-    async def is_allowed(ctx):
-        (ctx.author.id == 827799188950876201 
-            or ctx.author.id == 223117142290202625)
-    
+
     @bot.command()
     @commands.check(is_allowed)
     async def load(ctx, extension: str):
