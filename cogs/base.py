@@ -1,19 +1,11 @@
 from tinydb import TinyDB, Query
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from discord.ext import tasks, commands
 from discord import app_commands
 
 import re
 import requests
 import discord
-
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
 
 class Base(commands.Cog):
@@ -25,41 +17,41 @@ class Base(commands.Cog):
         self.query = Query()
         self.mangadb = self.db.table("Manga", cache_size=30)
 
-        self.driver = webdriver.Chrome(
-            ChromeDriverManager().install(), chrome_options=chrome_options
-        )
-
         self.elements = {
             "Asura" : {"class": "eplister", "tag": "div"},
             "Luminous" : {"class": "eplister", "tag": "div"},
             "Manganelo" : {"class": "panel-story-chapter-list", "tag": "div"}
         }
 
-    async def is_allowed(ctx):
-        return (ctx.author.id == 827799188950876201
-            or ctx.author.id == 223117142290202625)
-
     @commands.Cog.listener()
     async def on_ready(self):
         print("Bot Online")
         await self.bot.tree.sync()
     
-    @app_commands.command()
-    @commands.check(is_allowed)
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(error, ephemeral=True)
+        else:
+            raise error
+    
+    @commands.command()
+    @commands.has_permissions(administrator=True)
     async def start(self, ctx):
         self.channel_id = ctx.channel.id
         self.check_new_chapters.start()
+        await ctx.send("The Bot is Online Now")
     
-    @app_commands.command()
-    @commands.check(is_allowed)
+    @commands.command()
+    @commands.has_permissions(administrator=True)
     async def stop(self, ctx):
         self.check_new_chapters.cancel()
+        await ctx.send("The Bot is Offline Now")
 
     @app_commands.command()
     async def search(self, interaction: discord.Interaction, name: str):
-        role = discord.utils.get(interaction.guild.roles, name = 'test')
         data = requests.get('https://manganelo.com/search/story/'+self.format_for_url(name)).text
-        search_results = BeautifulSoup(data, features='lxml').find('div', class_="panel-search-story")
+        search_results = BeautifulSoup(data, features='html.parser').find('div', class_="panel-search-story")
         mangas = []
         result_embed = discord.Embed(title="Search Results")
         if not (search_results == None):
@@ -81,7 +73,6 @@ class Base(commands.Cog):
                 await interaction.response.send_message(embed=result_embed, ephemeral=True)
             else:
                 await interaction.response.send_message(mangas[0]['link'], ephemeral=True)
-                    
 
     @tasks.loop(minutes=30)
     async def check_new_chapters(self):
@@ -91,6 +82,24 @@ class Base(commands.Cog):
 
     def format_for_url(self, s):
         return '_'.join(''.join(map(lambda x: x if x.isalnum() else ' ', s)).split())
+    
+    def get_ping_role(self, channel, manga):
+        roles = channel.guild.roles
+        role_names = []
+        for role in roles:
+            role_names.append(role.name)
+        
+        gen = (role for role in role_names if (manga.lower() in role.lower()))
+        return next(gen)
+
+    async def role_ping(self, channel, manga):
+        try: 
+            role_to_ping = self.get_ping_role(channel, manga)
+        except:
+            pass
+        else:
+            role = discord.utils.get(channel.guild.roles, name=role_to_ping)
+            await channel.send(role.mention)
 
     async def fetch(self, manga):
         channel = self.bot.get_channel(self.channel_id)
@@ -105,8 +114,8 @@ class Base(commands.Cog):
             chapcount = result["chapcount"]
             url = result["url"]
 
-            self.driver.get(url)
-            soup = BeautifulSoup(self.driver.page_source, "lxml")
+            data = requests.get(url).text
+            soup = BeautifulSoup(data, "html.parser")
 
             # Getting all the chapters from the webpage
             chap_list = soup.findAll(tag, attrs={"class": cl})
@@ -122,6 +131,7 @@ class Base(commands.Cog):
 
             # Send message to channel if latest chapter is newer than existing chapter in database
             if latest_chapter_num > chapcount:
+                await self.role_ping(channel, manga)
                 self.mangadb.update({'chapcount': latest_chapter_num}, self.query.name == manga)
                 for item in href_data:
                     await channel.send(item["href"])

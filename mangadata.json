@@ -2,55 +2,55 @@
     "Manga": {
         "1": {
             "name": "Murim Login",
-            "chapcount": 131,
+            "chapcount": 133.0,
             "source": "Asura",
             "url": "https://asura.gg/manga/murim-login/"
         },
         "2": {
             "name": "The Greatest Estate Developer",
-            "chapcount": 74,
+            "chapcount": 76.0,
             "source": "Asura",
             "url": "https://asura.gg/manga/the-greatest-estate-developer/"
         },
         "3": {
             "name": "Mashle",
-            "chapcount": 133,
+            "chapcount": 134.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-hu985203"
         },
         "4": {
             "name": "Mercenary Enrollment",
-            "chapcount": 111,
+            "chapcount": 112.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-jz987182"
         },
         "5": {
             "name": "Legend Of The Northern Blade",
-            "chapcount": 132,
+            "chapcount": 133.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-ie985687"
         },
         "6": {
             "name": "Path Of The Shaman",
-            "chapcount": 78,
+            "chapcount": 80.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-kb987436"
         },
         "7": {
             "name": "Eleceed",
-            "chapcount": 220,
+            "chapcount": 221.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-de980813"
         },
         "8": {
-            "name": "Survival Story Of A Sword King In A Fantasy World",
-            "chapcount": 146,
+            "name": "Survival Story Of A Sword King",
+            "chapcount": 146.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-gt984176"
         },
         "9": {
             "name": "Long Way of the Warrior",
-            "chapcount": 100,
+            "chapcount": 100.0,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-je987039"
         },
@@ -68,7 +68,7 @@
         },
         "12": {
             "name": "The Beginning After The End",
-            "chapcount": 168.0,
+            "chapcount": 169.5,
             "source": "Manganelo",
             "url": "https://chapmanganato.com/manga-dg980989"
         }
