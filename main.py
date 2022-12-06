@@ -2,11 +2,13 @@ import asyncio
 import os
 import discord
 from discord.ext import commands
+from dotenv.main import load_dotenv
 
 intents = discord.Intents.all()
 intents.members = True
 
-TOKEN = 'ODM1NTc3NTA1MTc5MjM4NDIw.GJX15F.E43N99vu5AS1EV2BfIFoR6dwCcZpzJeBQ3yCMc'
+load_dotenv()
+BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 bot = commands.Bot(command_prefix=",", intents=intents)
 
 async def is_allowed(ctx):
@@ -37,6 +39,6 @@ async def main():
         await bot.reload_extension(f"cogs.{extension.lower()}")
         print(f"{extension.title()} Cog Succesfully Reloaded")
     
-    await bot.start(TOKEN)
+    await bot.start(BOT_TOKEN)
 
 asyncio.run(main())
