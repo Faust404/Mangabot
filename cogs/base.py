@@ -82,7 +82,14 @@ class Base(commands.Cog):
 
     def format_for_url(self, s):
         return '_'.join(''.join(map(lambda x: x if x.isalnum() else ' ', s)).split())
-    
+
+    def extract_chapter_num(self, string):
+        match = re.search(r'\d+(\.\d+)?', string)
+        if match:
+            return float(match.group())
+        else:
+            return None
+
     def get_ping_role(self, channel, manga):
         roles = channel.guild.roles
         role_names = []
@@ -119,22 +126,26 @@ class Base(commands.Cog):
 
             # Getting all the chapters from the webpage
             chap_list = soup.findAll(tag, attrs={"class": cl})
-            chap_list = chap_list[0].findAll("li")
 
-            # Getting information of the latest available chapter
-            href_data = chap_list[0].find_all("a", href=True)
+            try:
+                chap_list = chap_list[0].findAll("li")
+            except IndexError:
+                print("Index Error")
+            else:
+                # Getting information of the latest available chapter
+                href_data = chap_list[0].find_all("a", href=True)
 
-            # Getting the number of the latest available chapter
-            latest_chapter = re.findall(">Chapter.*<", str(href_data))[0]
-            latest_chapter = latest_chapter.lstrip(">").rstrip("<")
-            latest_chapter_num = float(latest_chapter.split()[1])
+                # Getting the number of the latest available chapter
+                latest_chapter = re.findall(">Chapter.*<", str(href_data))[0]
+                latest_chapter = latest_chapter.lstrip(">").rstrip("<")
+                latest_chapter_num = self.extract_chapter_num(latest_chapter)
 
-            # Send message to channel if latest chapter is newer than existing chapter in database
-            if latest_chapter_num > chapcount:
-                await self.role_ping(channel, manga)
-                self.mangadb.update({'chapcount': latest_chapter_num}, self.query.name == manga)
-                for item in href_data:
-                    await channel.send(item["href"])
+                # Send message to channel if latest chapter is newer than existing chapter in database
+                if latest_chapter_num > chapcount:
+                    await self.role_ping(channel, manga)
+                    self.mangadb.update({'chapcount': latest_chapter_num}, self.query.name == manga)
+                    for item in href_data:
+                        await channel.send(item["href"])
 
 
 async def setup(bot):
