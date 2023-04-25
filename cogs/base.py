@@ -125,27 +125,23 @@ class Base(commands.Cog):
             soup = BeautifulSoup(data, "html.parser")
 
             # Getting all the chapters from the webpage
-            chap_list = soup.findAll(tag, attrs={"class": cl})
+            chap_list = soup.find(tag, attrs={"class": cl})
+            chapter_links = chap_list.find_all('a', {'class': 'chapter-name text-nowrap'})
 
             try:
-                chap_list = chap_list[0].findAll("li")
+                chapter_links[0]
             except IndexError:
                 print("Index Error")
             else:
-                # Getting information of the latest available chapter
-                href_data = chap_list[0].find_all("a", href=True)
-
-                # Getting the number of the latest available chapter
-                latest_chapter = re.findall(">Chapter.*<", str(href_data))[0]
-                latest_chapter = latest_chapter.lstrip(">").rstrip("<")
-                latest_chapter_num = self.extract_chapter_num(latest_chapter)
+                latest_chapter_num = re.search(r'chapter-(\d+\.?\d*)', str(chapter_links[0])).group(1)
+                latest_chapter_num = float(latest_chapter_num)
+                latest_chapter_url = chapter_links[0]["href"]
 
                 # Send message to channel if latest chapter is newer than existing chapter in database
                 if latest_chapter_num > chapcount:
                     await self.role_ping(channel, manga)
                     self.mangadb.update({'chapcount': latest_chapter_num}, self.query.name == manga)
-                    for item in href_data:
-                        await channel.send(item["href"])
+                    await channel.send(latest_chapter_url)
 
 
 async def setup(bot):
