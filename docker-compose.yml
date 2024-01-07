@@ -1,0 +1,11 @@
+version: '3'
+services:
+  manga:
+    image: index.docker.io/himavanth19/manga_bot
+    container_name: manga_bot
+    volumes:
+      - "/home/faust/:/data"
+    env_file:
+      - /home/faust/.env
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
